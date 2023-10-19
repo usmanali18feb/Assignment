@@ -1,32 +1,10 @@
-from rest_framework import generics
-from .models import Product
-from .serializers import ProductSerializer
+from django.urls import path
+from . import views
 
-class ListAllProducts(generics.ListCreateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-class ReadUpdateDeleteProduct(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
-class ListByName(generics.ListAPIView):
-    serializer_class = ProductSerializer
-
-    def get_queryset(self):
-        name = self.kwargs['name']
-        return Product.objects.filter(name=name)
-
-class ListByCategory(generics.ListAPIView):
-    serializer_class = ProductSerializer
-
-    def get_queryset(self):
-        category = self.kwargs['category']
-        return Product.objects.filter(category=category)
-
-class ListByAvailability(generics.ListAPIView):
-    serializer_class = ProductSerializer
-
-    def get_queryset(self):
-        availability = self.kwargs['availability']
-        return Product.objects.filter(availability=availability)
+urlpatterns = [
+    path('products/', views.ListAllProducts.as_view(), name='list_all_products'),
+    path('products/<int:pk>/', views.ReadUpdateDeleteProduct.as_view(), name='read_update_delete_product'),
+    path('products/name/<str:name>/', views.ListByName.as_view(), name='list_by_name'),
+    path('products/category/<str:category>/', views.ListByCategory.as_view(), name='list_by_category'),
+    path('products/availability/<str:availability>/', views.ListByAvailability.as_view(), name='list_by_availability'),
+]
